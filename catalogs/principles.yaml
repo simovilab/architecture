@@ -1,0 +1,46 @@
+# Metadata about the catalog
+metadata:
+  title: "Architecture Principles Catalog"
+  version: "1.0"
+  date: "2025-09-18"
+  description: "A catalog of architectural principles for a Public Transportation Information System."
+  author:
+    - "Fabián Abarca Calderón"
+  organization: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
+  contact: "simovi@ucr.ac.cr"
+  license: "CC BY 4.0"
+
+# List of architectural principles
+principles:
+  - id: "principles:001"
+    domain: "Software Architecture"
+    name: "Separation of Concerns"
+    description: "Different concerns should be separated into distinct sections of the system to improve maintainability and scalability."
+    rationale: "By separating concerns, we can reduce complexity and make it easier to manage changes."
+    implications: "Modules should have clear responsibilities and interfaces."
+    related_principles: []
+    references:
+      - "https://en.wikipedia.org/wiki/Separation_of_concerns"
+
+  - id: "principles:002"
+    domain: "Software Architecture"
+    name: "Single Responsibility Principle"
+    description: "A class or module should have one, and only one, reason to change."
+    rationale: "This principle helps in reducing the impact of changes and improves code readability."
+    implications: "Classes should be designed to handle a single functionality."
+    related_principles:
+      - "principles:001"
+    references:
+      - "https://en.wikipedia.org/wiki/Single_responsibility_principle"
+
+  - id: "principles:003"
+    domain: "Software Architecture"
+    name: "Don't Repeat Yourself (DRY)"
+    description: "Every piece of knowledge must have a single, unambiguous, authoritative representation within a system."
+    rationale: "Avoiding duplication reduces the risk of inconsistencies and makes maintenance easier."
+    implications: "Code should be modular and reusable."
+    related_principles:
+      - "principles:001"
+      - "principles:002"
+    references:
+      - "https://en.wikipedia.org/wiki/Don%27t_repeat_yourself"
