@@ -17,6 +17,7 @@
           "id",
           "name",
           "description",
+          "application",
           "type",
           "priority",
           "status",
@@ -43,6 +44,16 @@
             "type": "string",
             "minLength": 1,
             "description": "Clear statement of what the system shall do or provide"
+          },
+          "application": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^application:\\d{3}$",
+              "description": "Identifier of the application(s) this requirement applies to, following the pattern application:XXX"
+            },
+            "minItems": 1,
+            "description": "List of application IDs this requirement is associated with"
           },
           "type": {
             "type": "string",

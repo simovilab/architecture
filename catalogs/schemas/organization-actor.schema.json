@@ -27,7 +27,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^organization:\\d{3}$",
+            "pattern": "^organization:[0-9]{3}$",
             "description": "Unique identifier for the organization following the pattern organization:XXX"
           },
           "name": {
@@ -40,22 +40,10 @@
             "minLength": 1,
             "description": "Brief description of the organization's purpose"
           },
-          "type": {
+          "stakeholder": {
             "type": "string",
-            "enum": [
-              "Research Lab",
-              "Government Agency",
-              "Private Company",
-              "Public Transportation Authority",
-              "Municipality",
-              "NGO",
-              "University",
-              "International Organization",
-              "Technology Vendor",
-              "Financial Institution",
-              "Consulting Firm"
-            ],
-            "description": "Type of organization"
+            "pattern": "^stakeholder:[0-9]{3}$",
+            "description": "Type of stakeholder the organization represents"
           },
           "contact": {
             "type": "string",
@@ -79,7 +67,7 @@
               },
               {
                 "type": "string",
-                "pattern": "^organization:\\d{3}$"
+                "pattern": "^organization:[0-9]{3}$"
               }
             ],
             "description": "Parent organization ID if applicable, null for top-level organizations"
@@ -129,7 +117,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^actor:\\d{3}$",
+            "pattern": "^actor:[0-9]{3}$",
             "description": "Unique identifier for the actor following the pattern actor:XXX"
           },
           "name": {

@@ -16,7 +16,7 @@ organizations:
   - id: organization:001
     name: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
     description: "A research lab focused on intelligent mobility systems."
-    type: "Research Lab"
+    stakeholder: "stakeholder:003"
     contact: "simovi@ucr.ac.cr"
     website: "https://simovi.ucr.ac.cr"
     location: "University of Costa Rica, San José, Costa Rica"
@@ -33,7 +33,7 @@ actors:
     description: "Lead Architect at SIMOVI."
     type: "Person"
     contact: "fabian.abarca@ucr.ac.cr"
-    organization: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
+    organization: "organization:001"
     roles:
       - "Lead Architect"
       - "Project Manager"

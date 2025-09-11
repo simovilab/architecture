@@ -25,7 +25,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^stakeholder:\\d{3}$",
+            "pattern": "^stakeholder:[0-9]{3}$",
             "description": "Unique identifier for the stakeholder following the pattern stakeholder:XXX"
           },
           "name": {

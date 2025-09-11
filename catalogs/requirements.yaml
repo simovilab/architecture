@@ -16,6 +16,9 @@ requirements:
   - id: requirement:001
     name: "Real-Time Bus Tracking"
     description: "The system shall provide real-time tracking of buses to users."
+    application:
+      - "application:001"
+      - "application:002"
     type: "Functional"
     priority: "High"
     status: "Approved"
@@ -39,6 +42,9 @@ requirements:
   - id: requirement:002
     name: "User Authentication"
     description: "The system shall provide secure user authentication and authorization."
+    application:
+      - "application:001"
+      - "application:002"
     type: "Functional"
     priority: "Medium"
     status: "Approved"
