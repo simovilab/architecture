@@ -2,7 +2,7 @@
 metadata:
   title: "Organizations and Actors Catalog"
   version: "1.0"
-  date: "2025-09-18"
+  date: "2025-09-11"
   description: "A catalog of architectural organizations and actors for a Public Transportation Information System."
   author:
     - "Jose Murillo Vargas"
@@ -13,10 +13,11 @@ metadata:
 
 # Organization catalog
 organizations:
-  - id: organization:001
+  - id: "organization:001"
     name: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
-    description: "A research lab focused on intelligent mobility systems."
-    stakeholder: "stakeholder:003"
+    description: "A research lab at the University of Costa Rica focused on intelligent mobility systems."
+    stakeholder: "stakeholder:007"
+    type: "Research Lab"
     contact: "simovi@ucr.ac.cr"
     website: "https://simovi.ucr.ac.cr"
     location: "University of Costa Rica, San José, Costa Rica"
@@ -26,9 +27,76 @@ organizations:
       - "Development"
       - "Consulting"
 
+  # --- NEW ENTRIES FROM PRELIMINARY LIST ---
+  - id: "organization:002"
+    name: "Ministry of Public Works and Transport (MOPT)"
+    description: "The government ministry that acts as the supreme authority and rector of the transport sector, setting national policy."
+    stakeholder: "stakeholder:003"
+    type: "Government Agency"
+    contact: "contact@mopt.go.cr"
+    website: "https://www.mopt.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Planning"
+      - "Regulation"
+
+  - id: "organization:003"
+    name: "Public Transport Council (CTP)"
+    description: "The specialized body under MOPT responsible for the day-to-day management and operational regulation of public transport."
+    stakeholder: "stakeholder:003"
+    type: "Government Agency"
+    contact: "contact@ctp.go.cr"
+    website: "https://www.ctp.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: "organization:002"
+    roles:
+      - "Operation"
+      - "Planning"
+      - "Regulation"
+
+  - id: "organization:004"
+    name: "Regulatory Authority for Public Services (ARESEP)"
+    description: "An independent authority that regulates public services by setting tariffs and overseeing service quality."
+    stakeholder: "stakeholder:003"
+    type: "Government Agency"
+    contact: "contact@aresep.go.cr"
+    website: "https://aresep.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Regulation"
+      - "Oversight"
+
+  - id: "organization:005"
+    name: "Central Bank of Costa Rica (BCCR)"
+    description: "The central bank responsible for operating the country's national electronic payment system (SINPE-TP)."
+    stakeholder: "stakeholder:006"
+    type: "Government Agency"
+    contact: "contact@bccr.fi.cr"
+    website: "https://www.bccr.fi.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Technology Provider"
+      - "Operation"
+
+  - id: "organization:006"
+    name: "National Laboratory of Materials and Structural Models (LanammeUCR)"
+    description: "A university research center that provides legally mandated independent technical oversight of the national road network."
+    stakeholder: "stakeholder:007"
+    type: "Research Lab"
+    contact: "contact@lanamme.ucr.ac.cr"
+    website: "https://www.lanamme.ucr.ac.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Oversight"
+      - "Research"
+
 # Actor catalog
 actors:
-  - id: actor:001
+  - id: "actor:001"
     name: "Fabián Abarca Calderón"
     description: "Lead Architect at SIMOVI."
     type: "Person"
@@ -37,3 +105,14 @@ actors:
     roles:
       - "Lead Architect"
       - "Project Manager"
+
+  # --- NEW ENTRY FROM PRELIMINARY LIST ---
+  - id: "actor:002"
+    name: "Jose Murillo Vargas"
+    description: "Student and project contributor responsible for developing the Stakeholder and Organization/Actor architecture catalogs."
+    type: "Person"
+    contact: "jose.murillovargas@ucr.ac.cr"
+    organization: "organization:001"
+    roles:
+      - "Developer"
+      - "Analyst"
