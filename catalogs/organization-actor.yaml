@@ -106,7 +106,7 @@ actors:
       - "Lead Architect"
       - "Project Manager"
 
-  # --- NEW ENTRY FROM PRELIMINARY LIST ---
+  
   - id: "actor:002"
     name: "Jose Murillo Vargas"
     description: "Student and project contributor responsible for developing the Stakeholder and Organization/Actor architecture catalogs."
@@ -116,3 +116,39 @@ actors:
     roles:
       - "Developer"
       - "Analyst"
+  - id: "actor:003"
+    name: "Efraím Zeledón Leiva"
+    description: "Current Minister of Public Works and Transport (MOPT)."
+    type: "Person"
+    contact: "dvagecorrespondencia@mopt.go.cr" 
+    organization: "organization:002"
+    roles:
+      - "Project Manager"
+
+  - id: "actor:004"
+    name: "Rafael Alberto Herrera García"
+    description: "Current Executive Director of the Public Transport Council (CTP)."
+    type: "Person"
+    contact: "atencion.usuario@ctp.go.cr" 
+    organization: "organization:003"
+    roles:
+      - "Operations Manager"
+
+  - id: "actor:005"
+    name: "Eric Bogantes Cabezas"
+    description: "Current General Regulator of the Regulatory Authority for Public Services (ARESEP)."
+    type: "Person"
+    contact: "cmora@aresep.go.cr" 
+    organization: "organization:004"
+    roles:
+      - "Analyst"
+      - "Consultant"
+
+  - id: "actor:006"
+    name: "Róger Madrigal López"
+    description: "Current Executive President of the Central Bank of Costa Rica (BCCR)."
+    type: "Person"
+    contact: "atencionalciudadano@bccr.fi.cr" 
+    organization: "organization:005"
+    roles:
+      - "Project Manager"
