@@ -2,294 +2,394 @@ preguntas clave
 
 ¿Qué debe hacer el sistema?
 
- Proveer rastreo en tiempo real, APIs públicas/privadas (GTFS + Realtime), gestión de flota y pagos, notificaciones, dashboards operativos y reporting [1].
+ Proveer rastreo en tiempo real, notificaciones de alerta e información estática de mapas, horarios y rutas [1].
 
 ¿Qué cambios son necesarios para cumplir los objetivos?
 
- Adopción de estándares (GTFS/GTFS-Realtime), despliegue de telemetría a bordo (OBU + conectividad), arquitectura en microservicios con ingest/streaming, procesos de seguridad/privacidad, acuerdos con PSPs y gobernanza de datos (SIMI y ARC-IT sugieren gobernanza y gobernanza operativa) [2].
+ Adopción de estándares (GTFS/GTFS-Realtime), despliegue de telemetría a bordo (OBU, conectividad), procesos de seguridad/privacidad y gobernanza de datos (SIMI y ARC-IT sugieren  gobernanza operativa) [2].
 
 ¿Cómo se plantean los requisitos de un sistema informático?
 
  Siguiendo IEEE Std 830: se documentan introducción, descripción general, requisitos específicos (funcionales, rendimiento, interfaces, bases de datos, atributos y constraints), con trazabilidad, verificación y apportioning. Usa plantillas (por modo, por user class, por feature) según convenga [3].
 
-Elementos preliminares
+En base a los requisitos funcionales para el sistema de transporte inteligente:
 
-Elementos preliminares (stakeholders, tecnologías, interfaces, organizaciones, actores, etc.)
+  1. Registro, monitoreo y localización en tiempo real de unidades mediante GPS y redes móviles [2].
+  2. Consulta pública de rutas, horarios y tiempos de llegada por aplicación web o móvil [2].
+  3. Gestión y validación de datos por parte del Consejo de Transporte Público (CTP) y la ARESEP [2].
+  4. Canal de alertas automáticas por emergencias enviado desde la CNE [2].
+  5. Módulo de retroalimentación ciudadana gestionado por las municipalidades [2].
 
-Stakeholders [4] (grupos)
+Se proponen los siguientes requisitos basándose en las referencias [3], [4] y [5]: 
 
- Operadores de transporte público (empresas de buses). 
- Autoridad/secretaría de transporte (regulación, control).
- Pasajeros / ciudadanos / usuarios finales. 
- Conductores y personal de flota (consolas en bus). 
- Equipo de operaciones (SOC, soporte). 
- Equipo de planificación / scheduling (planificadores de rutas). 
- Equipo de producto / desarrollo (SW/DevOps). 
- Proveedores de pago / PSP (tarjetas, billeteras móviles). 
- Proveedores de mapas / geocodificación (Google Maps, OpenStreetMap). 
- Proveedores de conectividad / MVNO / operadores móviles. 
- Integradores TI y SIEM (seguridad, auditoría). 
- Agregadores / apps de movilidad (apps de terceros que consumen GTFS). 
- Comunidad / grupos de interés (ONG movilidad, academia). 
-  
-
-Tecnologías y componentes tecnológicos [4]
-
- Dispositivos a bordo: GPS GNSS, modem celular 4G/5G, OBU (on-board unit). 
- Sensores: odómetro, NFC/contactless reader (para pago), puertas, sensores de ocupación (opcional). 
- Edge compute en bus (gateway local para buffering). 
- Backend en la nube: API Gateway, microservicios, base de datos relacional + data lake/warehouse. 
- Protocolos y estándares: GTFS (static), GTFS-Realtime, MQTT/HTTP(S)/WebSocket, HTTPS/REST, Oauth2/OpenID Connect. 
- Mensajería / streaming: Kafka / RabbitMQ (telemetría en tiempo real). 
- Observabilidad: logging centralizado, métricas (Prometheus), tracing.
- CI/CD, contenedores (Docker/Kubernetes).
- Sistemas de pago: integración con PSP, tokenización, PCI-DSS considerations.
- Herramientas GIS / routing engine: OSRM, GraphHopper, Valhalla.
-  (Se alinea con tech stack recomendado en repositorios y prácticas ITS). 
-
-Interfaces (externas e internas) [4]
-
- GTFS Schedule (archivo estático) y GTFS-Realtime feed (vehicle positions, trip updates, service alerts).  
- API pública REST para terceros (rutas, paradas, ETA). 
- Webhooks / push para notificaciones (SMS, push notifications). 
- Interfaces con sistemas de pago (PSP API). 
- Interface con sistemas de control de flota (AVL/MDM). 
- Integración con sistemas de información del operador (ERP, cadence scheduling). 
- Telemetría (MQTT/Kafka) entre buses y backend. 
-  (IEEE 830 sugiere documentar cada interfaz — contenido, formato, timing, tolerancia). 
-
-Actores (sistemas y usuarios) [4]
-
- Actor humano: Pasajero (app móvil, web). 
- Actor humano: Operador/Despacho (dashboard). 
- Actor sistema: GTFS-consumer apps (Google Maps, apps locales). 
- Actor sistema: PSP (pagos). 
- Actor sistema: Sistemas de control de tránsito / autoridad. 
- Actor sistema: Módulo de predicción ETA / ML.
-  (Organizar por “user class” u “objetos” es recomendado por IEEE 830 para claridad). 
-
-Catálogo preliminar de requisitos
-
-requirement:001
-
-name: Real-Time Bus Tracking [1] 
-description: El sistema deberá proveer la posición en tiempo real de cada unidad de bus (lat, lon, heading, velocidad, timestamp) con actualización mínima cada 5 s/10 s (configurable). 
-type: Functional 
-priority: Critical 
-status: Approved 
-rationale: Base para información al pasajero, despacho y análisis operativo; facilita GTFS-Realtime.  
-stakeholders: Pasajeros, Operador, Despacho, Autoridad. 
-acceptanceCriteria: 95% de los mensajes de posición recibidos en backend con latencia ≤ 10s bajo condiciones normales; precisión GPS ≤ 10 m. 
-relatedComponents: OBU (GPS + modem), Edge buffer, Telemetry Ingest service, Position service, DB (timeseries). 
-relatedInterfaces: GTFS-Realtime vehicle_positions, MQTT/Kafka ingest.  
-relatedDataEntities: vehicle_position(record), vehicle_id, trip_id, timestamp, speed, heading. 
-relatedActors: Bus OBU, Backend Ingest, Third-party apps. 
+id: requirement:001
+name: Real-Time Data Message Exchange
+description: El sistema deberá transmitir posiciones de vehículos, actualizaciones de viajes y alertas dentro de un único FeedMessage para garantizar una comunicación en tiempo real consistente.
+type: Functional
+priority: High
+status: In Review
+rationale: Contenedor central de todos los datos GTFS-Realtime. Garantiza sincronización y entrega confiable de actualizaciones.
+stakeholders: [Operadores de Transporte Público, Desarrolladores de Aplicaciones, CTP, ARESEP]
+acceptanceCriteria:
+  - FeedMessage incluye cabecera y bloques de entidades para vehículos, viajes y alertas
+  - El mensaje se actualiza al menos cada 30 segundos
+  - El formato del mensaje valida contra el esquema GTFS-Realtime
+relatedComponents: [API de Datos en Tiempo Real, Agregador de Datos, Servicio de Mensajería en la Nube]
+relatedInterfaces: [Endpoint API GTFS-Realtime, Aplicaciones Web/Móviles]
+relatedDataEntities: [TripUpdate, VehiclePosition, Alert]
+relatedActors: [Sistema del Operador de Transporte, Usuarios Finales, Reguladores]
+relación con requisito Funcional: [1, 2, 3]
 
 
+id: requirement:002
+name: Real-Time Feed Metadata
+description: El sistema deberá proveer un FeedHeader que incluya marca de tiempo y versión para validar la vigencia y compatibilidad de los datos.
+type: Functional
+priority: High
+status: In Review
+rationale: Permite a reguladores y aplicaciones verificar si los datos recibidos son actuales y cumplen con la versión GTFS-Realtime.
+stakeholders: [CTP, ARESEP, Desarrolladores de Aplicaciones]
+acceptanceCriteria:
+  - FeedHeader incluye feed_version y timestamp
+  - La marca de tiempo no difiere más de 10 segundos del tiempo del servidor
+relatedComponents: [Publicador de Datos, Servicio de Validación]
+relatedInterfaces: [Endpoint API GTFS-Realtime]
+relatedDataEntities: [FeedHeader]
+relatedActors: [Agencias Reguladoras, Aplicaciones]
+relación con requisito Funcional: [1, 2, 3]
 
- requirement:002
+id: requirement:003
+name: Real-Time Vehicle Location
+description: El sistema deberá proporcionar en tiempo real la latitud, longitud, dirección y velocidad de cada vehículo en operación.
+type: Functional
+priority: Critical
+status: In Review
+rationale: Requisito central para el rastreo GPS, monitoreo y aplicaciones públicas.
+stakeholders: [Pasajeros, Operadores de Transporte, CTP, ARESEP]
+acceptanceCriteria:
+  - Precisión de localización dentro de 10 metros
+  - Actualizaciones al menos cada 15 segundos
+  - El ID del vehículo coincide con un vehículo registrado en la base de datos
+relatedComponents: [Dispositivo GPS, Red Móvil, Servidor en Tiempo Real]
+relatedInterfaces: [Endpoint GTFS-Realtime VehiclePositions, Mapas Web/Móviles]
+relatedDataEntities: [VehiclePosition, Position, VehicleDescriptor]
+relatedActors: [Conductores, Sistema IT del Operador, Pasajeros]
+relación con requisito Funcional: [1]
 
-name: User Authentication 
-description: El sistema deberá autenticar usuarios usando OIDC/OAuth2 con roles (rider, operator, admin). 
-type: Functional / Security 
-priority: High 
-status: Approved 
-rationale: Protección de APIs y gestión de permisos; separación de privilegios. 
-acceptanceCriteria: Login exitoso < 3 s; tokens expirables; roles aplican correctamente en 100% de endpoints. 
-relatedComponents: Identity Provider, API Gateway, User profile service. 
-relatedInterfaces: OIDC endpoints, Admin UI. 
-relatedDataEntities: user_profile, role, token. 
-relatedActors: Pasajero, Admin, Operador. 
+id: requirement:004
+name: Trip Schedule Updates
+description: El sistema deberá proporcionar tiempos previstos de llegada y salida en cada parada, incluyendo retrasos o adelantos.
+type: Functional
+priority: Critical
+status: In Review
+rationale: Esencial para sistemas de información al pasajero y validación regulatoria del cumplimiento del servicio.
+stakeholders: [Pasajeros, Desarrolladores de Aplicaciones, CTP, ARESEP]
+acceptanceCriteria:
+  - Tiempos previstos disponibles para todos los viajes activos
+  - El campo de retraso se llena cuando el servicio se desvía más de 60 segundos
+  - Vinculado al GTFS estático mediante TripDescriptor
+relatedComponents: [Motor de Predicción de Horarios, Servicio de Integración de Datos]
+relatedInterfaces: [Endpoint GTFS-Realtime TripUpdates, Aplicaciones Web/Móviles]
+relatedDataEntities: [TripUpdate, StopTimeUpdate, TripDescriptor]
+relatedActors: [Pasajeros, Operadores de Transporte, Reguladores]
+relación con requisito Funcional: [1, 2]
 
+id: requirement:005
+name: Trip Identification
+description: El sistema deberá identificar cada viaje activo con referencia al feed GTFS estático para validación y consistencia de horarios.
+type: Functional
+priority: High
+status: In Review
+rationale: Garantiza que las actualizaciones en tiempo real estén correctamente asociadas con los viajes planificados.
+stakeholders: [CTP, ARESEP, Operadores de Transporte]
+acceptanceCriteria:
+  - Cada TripUpdate contiene un TripDescriptor válido
+  - TripDescriptor coincide con trip_id del GTFS estático
+relatedComponents: [Validador de Datos, Capa de Integración en Tiempo Real]
+relatedInterfaces: [API GTFS-Realtime, Feed GTFS Estático]
+relatedDataEntities: [TripDescriptor]
+relatedActors: [Agencias Reguladoras, Operadores de Transporte]
+relación con requisito Funcional: [2, 3]
 
+id: requirement:006
+name: Vehicle Identification
+description: El sistema deberá identificar de manera única los vehículos en tiempo real para auditoría, monitoreo y reportes.
+type: Functional
+priority: High
+status: In Review
+rationale: Permite a reguladores y operadores rastrear desempeño y cumplimiento de los vehículos.
+stakeholders: [CTP, ARESEP, Operadores de Transporte]
+acceptanceCriteria:
+  - Cada VehiclePosition incluye un VehicleDescriptor único
+  - VehicleDescriptor corresponde a un vehículo registrado por el operador
+relatedComponents: [Sistema de Gestión de Flota, Base de Datos Regulatoria]
+relatedInterfaces: [Endpoint GTFS-Realtime VehiclePositions]
+relatedDataEntities: [VehicleDescriptor, VehiclePosition]
+relatedActors: [Operadores de Transporte, Reguladores]
+relación con requisito Funcional: [1, 3]
 
- requirement:003
+id: requirement:007
+name: Real-Time Service Alerts
+description: El sistema deberá proveer alertas sobre emergencias, interrupciones del servicio y desvíos de rutas con rango de tiempo, severidad, causa y entidades afectadas.
+type: Functional
+priority: Critical
+status: In Review
+rationale: Permite comunicación de emergencias (CNE), mejora la seguridad de los pasajeros y asegura transparencia en cambios del servicio.
+stakeholders: [Pasajeros, CNE, Operadores de Transporte, CTP, Municipalidades]
+acceptanceCriteria:
+  - Las alertas incluyen título, descripción y rutas/paradas afectadas
+  - Las alertas tienen rango de tiempo activo
+  - Campos de Severidad, Causa y Efecto están completados
+relatedComponents: [Interfaz de Gestión de Emergencias, Sistema de Distribución de Alertas]
+relatedInterfaces: [Endpoint GTFS-Realtime Alerts, Notificaciones Web/Móviles]
+relatedDataEntities: [Alert, TimeRange, EntitySelector, Cause, Effect, SeverityLevel]
+relatedActors: [CNE, Pasajeros, Municipalidades, Operadores]
+relación con requisito Funcional: [2, 3, 4]
 
-name: GTFS Static & Realtime Compatibility  
-description: El sistema debe publicar y consumir GTFS Schedule (static) y GTFS-Realtime feeds (vehicle positions, trip updates, service alerts) en formatos estándar [5]. 
-type: Functional / Interoperability 
-priority: Critical 
-status: In Review 
-rationale: Interoperabilidad con ecosistema de apps y cumplimiento de prácticas globales.  
-acceptanceCriteria: Generación de GTFS static válida (validador) y feed GTFS-Realtime conforme a spec; apps externas pueden suscribirse. 
-relatedComponents: GTFS generator, Realtime publisher, Feed validator. 
-relatedInterfaces: GTFS files (stops.txt, trips.txt, routes.txt), GTFS-Realtime protobuf endpoint. 
-relatedDataEntities: routes, trips, stops, stop_times, vehicle_positions. 
-relatedActors: External apps, MobilityData consumers. 
-
-
-
- requirement:004
-
-name: ETA / Arrival Predictions 
-description: El sistema deberá calcular ETAs a paradas usando datos de posición en tiempo real y modelos de predicción (ML o reglas heurísticas) [4]. 
-type: Functional / Technical 
-priority: High 
-status: Pending 
-rationale: Mejora la experiencia de usuario y la eficiencia operativa. 
-acceptanceCriteria: Error medio absoluto (MAE) de ETA ≤ 60 s en condiciones normales; 90% de predicciones disponibles para los próximos 15 min. 
-relatedComponents: Prediction service (ML), Historical DB, Stream processor. 
-relatedInterfaces: ETA API (public), dashboard. 
-relatedDataEntities: historical_trip_data, traffic_conditions, route_segment_times. 
-relatedActors: Passenger app, Dispatch. 
-
-
-
- requirement:005
-
-name: Notifications & Alerts (Push/SMS/In-App) 
-description: Envío de alertas de servicio (retrasos, cancelaciones) y notificaciones personalizadas (paradas favoritas) [5]. 
-type: Functional 
-priority: Medium 
-status: Pending 
-rationale: Comunicación proactiva mejora satisfacción y reduce consultas. 
-acceptanceCriteria: 99% de mensajes entregados dentro de SLA (configurable); registro de entrega. 
-relatedComponents: Notification service, Push provider, SMS gateway. 
-relatedInterfaces: Webhooks, mobile push, SMS API. 
-relatedDataEntities: notification, user_subscription. 
-relatedActors: Passenger app, Admin. 
-
-
-requirement:006
-
-name: Admin & Operations Dashboard 
-description: Dashboard web para monitoreo de flota, incidentes, KPIs y control manual de rutas/servicios [5]. 
-type: Functional / Usability 
-priority: High 
-status: Pending 
-rationale: Operadores necesitan visibilidad y control en tiempo real. 
-acceptanceCriteria: Panel con heatmap, unidades en tiempo real, filtros por ruta, alertas configurables. 
-relatedComponents: Frontend UI, Backend APIs, Auth. 
-relatedInterfaces: Internal API, role-based access. 
-relatedDataEntities: live_positions, incidents, kpi_metrics. 
-relatedActors: Operations staff, Admin. 
-
-
-
- requirement:007
-
-name: Reporting & Analytics (Batch / Near-real-time) 
-description: Generación de informes operativos (punctuality, ridership) y dataset para análisis histórico [5]. 
-type: Functional / Business 
-priority: Medium 
-status: Pending 
-rationale: Planeamiento y KPIs para optimización del servicio. 
-acceptanceCriteria: Dashboards con KPIs diarios/semana/mes y export CSV/JSON; latencia de 1h para datos agregados. 
-relatedComponents: Data warehouse, ETL jobs, BI tools. 
-relatedInterfaces: BI connectors (SQL). 
-relatedDataEntities: trips, passenger_counts, fares. 
-relatedActors: Planners, Analysts. 
+id: requirement:008
+name: Citizen Feedback Integration
+description: El sistema deberá proveer un módulo de retroalimentación donde los pasajeros puedan enviar comentarios, quejas o sugerencias sobre rutas, vehículos y paradas, los cuales serán gestionados por las municipalidades.
+type: Functional
+priority: High
+status: In Review
+rationale: Promueve la transparencia, la participación ciudadana y la mejora continua del servicio de transporte. Se alinea con las prácticas de gobernanza en Costa Rica donde las municipalidades atienden la retroalimentación comunitaria.
+stakeholders: [Pasajeros, Municipalidades, CTP, ARESEP, Operadores de Transporte]
+acceptanceCriteria:
+  - Los pasajeros pueden enviar retroalimentación vía aplicaciones web o móviles
+  - La retroalimentación se categoriza (queja, sugerencia, incidente, etc.)
+  - Las municipalidades cuentan con una interfaz para revisar, clasificar y responder
+  - Se pueden generar reportes y compartir con reguladores (CTP, ARESEP)
+relatedComponents: [Portal de Retroalimentación Ciudadana, Panel de Gestión Municipal, Sistema de Notificaciones]
+relatedInterfaces: [Aplicaciones Web/Móviles, Sistema de Información Municipal, Interfaz de Reportes Regulatorios]
+relatedDataEntities: [FeedbackEntry, FeedbackCategory, UserProfile, FeedbackResponse]
+relatedActors: [Pasajeros, Funcionarios Municipales, CTP, ARESEP, Operadores de Transporte]
+relación con requisito Funcional: [5]
 
 
 
- requirement:008
 
-name: Security & Audit Trail 
-description: Registro inmutable de acciones críticas (cambios de tarifa, login admin, reconfiguraciones) y logs de acceso [5]. 
-type: Non-Functional / Security 
-priority: Critical 
-status: Approved 
-rationale: Cumplimiento, detección de fraude y responsabilidad. 
-acceptanceCriteria: Todos los eventos críticos registrados con user_id, timestamp y resultado; retención mínima configurable. 
-relatedComponents: SIEM, Audit DB, Auth service. 
-relatedInterfaces: Logging API, Admin UI. 
-relatedDataEntities: audit_log, access_event. 
-relatedActors: Admin, Security team. 
+En base a los requisitos no funcionales para el sistema de transporte inteligente:
+
+  1. Escalabilidad para integrar nuevos operadores o municipalidades sin rediseño estructural [2].
+  2. Cumplimiento con WCAG 2.1 en accesibilidad digital [2].
+  3. Soporte multilingüe: español e inglés como mínimo [2].
+  4. Alta disponibilidad (>99%) y mecanismos de recuperación ante fallos [2].
+  5. Cumplimiento con la Ley 8968 de protección de datos [2].
+
+Se proponen los siguientes requisitos basándose en las referencias [3], [4], [5], [6] y [7]:
+
+id: requirement:009
+name: Soporte Multilingüe
+description: El sistema deberá permitir que todos los mensajes de texto en la aplicación y alertas tengan versiones en al menos español e inglés.
+type: Non-Functional
+priority: High
+status: In Review
+rationale: Permite atender a usuarios de diferentes idiomas y cumplir con estándares internacionales de accesibilidad y usabilidad.
+stakeholders: [Pasajeros, Operadores de Transporte, Desarrolladores de Aplicaciones, CTP, ARESEP]
+acceptanceCriteria:
+  - Todos los textos visibles al usuario tienen traducción al español e inglés
+  - Traducciones verificadas y consistentes con los mensajes originales
+  - La selección de idioma se aplica automáticamente según la configuración del usuario
+relatedComponents: [Motor de Mensajes, Servidor de Aplicaciones, Base de Datos de Textos Multilingües]
+relatedInterfaces: [API de Aplicaciones Web/Móviles, Endpoint GTFS-Realtime]
+relatedDataEntities: [TranslatedString, TripUpdate, Alert]
+relatedActors: [Usuarios Finales, Operadores de Transporte, Reguladores]
+relación con requisito No Funcional: [3]
+
+id: requirement:010
+name: Recursos Multimedia Multilingües
+description: El sistema deberá proporcionar imágenes y recursos multimedia localizados que se adapten al idioma del usuario.
+type: Non-Functional
+priority: Medium
+status: In Review
+rationale: Mejora la comprensión de la información y cumple con estándares de accesibilidad y experiencia de usuario multilingüe.
+stakeholders: [Pasajeros, Desarrolladores de Aplicaciones, Operadores de Transporte]
+acceptanceCriteria:
+  - Todas las imágenes y iconos de mensajes importantes tienen versión para español e inglés
+  - La imagen mostrada se corresponde con el idioma seleccionado por el usuario
+relatedComponents: [Repositorio de Imágenes Localizadas, Motor de Presentación de UI]
+relatedInterfaces: [Aplicaciones Web/Móviles]
+relatedDataEntities: [LocalizedImage, TranslatedImage]
+relatedActors: [Usuarios Finales, Desarrolladores]
+relación con requisito No Funcional: [3]
+
+id: requirement:011
+name: Información de Accesibilidad
+description: El sistema deberá indicar la accesibilidad de paradas y vehículos para personas con movilidad reducida, cumpliendo con WCAG 2.1.
+type: Non-Functional
+priority: High
+status: In Review
+rationale: Garantiza que la información de transporte sea accesible para todos los usuarios, cumpliendo normas de accesibilidad digital y física.
+stakeholders: [Pasajeros con Discapacidad, Operadores de Transporte, CTP, ARESEP]
+acceptanceCriteria:
+  - Todos los vehículos y paradas indican el estado de accesibilidad
+  - La información es visualmente accesible en aplicaciones web y móviles
+  - Compatible con lectores de pantalla y estándares WCAG 2.1
+relatedComponents: [Base de Datos de Paradas y Vehículos, Motor de Presentación UI]
+relatedInterfaces: [Aplicaciones Web/Móviles]
+relatedDataEntities: [WheelchairBoarding, Stop, VehiclePosition]
+relatedActors: [Usuarios con Discapacidad, Operadores, Reguladores]
+relación con requisito No Funcional: [2]
+
+id: requirement:012
+name: Adaptabilidad de Viajes
+description: El sistema deberá permitir modificar dinámicamente los viajes y rutas sin necesidad de rediseño estructural del sistema.
+type: Non-Functional
+priority: Critical
+status: In Review
+rationale: Facilita la escalabilidad para integrar nuevos operadores o municipalidades y soporta cambios operativos sin interrupciones.
+stakeholders: [Operadores de Transporte, Municipalidades, CTP, ARESEP]
+acceptanceCriteria:
+  - Nuevos viajes o cambios de rutas pueden agregarse o modificarse sin reiniciar el sistema
+  - El feed en tiempo real refleja inmediatamente los cambios
+  - No se requieren cambios en la base de datos estática existente
+relatedComponents: [Motor de Modificación de Viajes, Integración GTFS-Realtime]
+relatedInterfaces: [API GTFS-Realtime, Dashboard de Operadores]
+relatedDataEntities: [TripModifications, TripUpdate, StopTimeUpdate]
+relatedActors: [Operadores, Administradores de Sistema, Reguladores]
+relación con requisito No Funcional: [1, 4]
+
+id: requirement:013
+name: Gestión de Paradas Dinámicas
+description: El sistema deberá permitir reemplazar o seleccionar paradas afectadas por cambios o desvíos sin modificar la estructura general de rutas.
+type: Non-Functional
+priority: High
+status: In Review
+rationale: Permite escalar y adaptarse a nuevos operadores o situaciones imprevistas sin reestructurar la base de datos o el feed de rutas.
+stakeholders: [Operadores de Transporte, Municipalidades, CTP]
+acceptanceCriteria:
+  - Se pueden definir paradas alternativas para viajes en tiempo real
+  - La información se actualiza automáticamente en el feed GTFS-Realtime
+relatedComponents: [Gestor de Paradas, Motor de Integración de Datos]
+relatedInterfaces: [API GTFS-Realtime, Aplicaciones Web/Móviles]
+relatedDataEntities: [StopSelector, ReplacementStop, StopTimeUpdate]
+relatedActors: [Operadores, Pasajeros, Reguladores]
+relación con requisito No Funcional: [1, 4]
+
+id: requirement:014
+name: Representación de Trayectorias
+description: El sistema deberá representar de manera flexible las trayectorias de los vehículos, permitiendo cambios de ruta y soporte multilingüe en información de rutas.
+type: Non-Functional
+priority: Medium
+status: In Review
+rationale: Facilita escalabilidad y visualización clara de rutas, incluyendo soporte para diferentes idiomas en la presentación de trayectorias.
+stakeholders: [Operadores de Transporte, Pasajeros, Desarrolladores de Aplicaciones]
+acceptanceCriteria:
+  - Todas las rutas están representadas por shapes válidos
+  - Cambios en trayectorias se reflejan en tiempo real sin alterar la estructura base
+  - Información de rutas visualizada incluye etiquetas en múltiples idiomas
+relatedComponents: [Motor de Mapas, Base de Datos de Shapes]
+relatedInterfaces: [Aplicaciones Web/Móviles, API GTFS-Realtime]
+relatedDataEntities: [Shape, TripUpdate]
+relatedActors: [Pasajeros, Operadores, Desarrolladores]
+relación con requisito No Funcional: [1, 3, 4]
+
+id: requirement:015
+name: Información de Paradas
+description: El sistema deberá proveer información detallada de paradas incluyendo accesibilidad y nombres multilingües.
+type: Non-Functional
+priority: High
+status: In Review
+rationale: Mejora la experiencia del usuario, cumple WCAG 2.1 y facilita integración de nuevos operadores o municipalidades.
+stakeholders: [Pasajeros, Operadores, CTP, ARESEP]
+acceptanceCriteria:
+  - Todas las paradas incluyen nombre en español e inglés
+  - Información de accesibilidad disponible y visible según WCAG 2.1
+  - Se pueden agregar nuevas paradas sin reestructurar el sistema
+relatedComponents: [Base de Datos de Paradas, API de Información de Paradas]
+relatedInterfaces: [Aplicaciones Web/Móviles, Endpoint GTFS-Realtime]
+relatedDataEntities: [Stop, WheelchairBoarding, TranslatedString]
+relatedActors: [Pasajeros, Operadores, Reguladores]
+relación con requisito No Funcional: [1, 2, 3]
+
+id: requirement:016
+name: Protección de Datos de Ubicación de Vehículos
+description: El sistema deberá garantizar que cualquier información de ubicación de vehículos que pueda identificar a conductores y/o pasajeros sea tratada conforme a la Ley 8968, asegurando confidencialidad y seguridad.
+type: Non-Functional
+priority: Critical
+status: In Review
+rationale: Previene la exposición de datos personales de conductores y/o pasajeros y cumple con las regulaciones legales de Costa Rica.
+stakeholders: [Conductores, Operadores de Transporte, CTP, ARESEP, Pasajeros]
+acceptanceCriteria:
+  - La ubicación de los vehículos se almacena y transmite de forma segura
+  - No se divulga información que identifique directamente a los conductores y/o pasajeros sin consentimiento
+  - Los datos cumplen con los estándares de confidencialidad y seguridad requeridos
+relatedComponents: [Servidores de Datos, Base de Datos de Vehículos, Sistema de Seguridad de Información]
+relatedInterfaces: [API GTFS-Realtime VehiclePositions, Aplicaciones Web/Móviles]
+relatedDataEntities: [VehiclePosition, VehicleDescriptor, Position]
+relatedActors: [Conductores, Administradores de Flota, Reguladores]
+relación con requisito No Funcional: [5]
 
 
 
- requirement:009
-
-name: High Availability & Fault Tolerance (SLA) 
-description: Backend crítico con disponibilidad ≥ 99.9 % (configurable), tolerante a fallos regionales; failover automático [5]. 
-type: Non-Functional / Reliability 
-priority: Critical 
-status: In Review 
-rationale: Servicio en tiempo real exige disponibilidad. 
-acceptanceCriteria: RTO/RPO definidos; pruebas de DR realizadas trimestralmente. 
-relatedComponents: Load balancers, multi-AZ deployment, DB replicas. 
-relatedInterfaces: Healthcheck endpoints. 
-relatedDataEntities: service_status, replication_state. 
-relatedActors: DevOps, Operations. 
 
 
 
- requirement:010
+En base a los requisitos de rendimiento para el sistema de transporte inteligente:
 
-name: Scalability (throughput) 
-description: Soportar crecimiento: tamaño inicial X buses y escalar a 10x sin degradación perceptible [5]. 
-type: Non-Functional / Performance 
-priority: High 
-status: Pending 
-rationale: Escalado por aumento de flota o adopción. 
-acceptanceCriteria: 95% de eventos procesados < 2 s en picos previstos; auto-scaling validado. 
-relatedComponents: Streaming infra, Autoscaling groups. 
-relatedInterfaces: Telemetry ingest. 
-relatedDataEntities: telemetry_events. 
+1. Visualización de datos para al menos 5,000 unidades móviles concurrentes [2].
+2. Actualización de ubicación en menos de 3 segundos [2].
+3. Compatibilidad con dispositivos móviles con conectividad 3G o superior [2].
+4. Notificación de eventos críticos en un plazo máximo de 60 segundos [2].
+
+Se proponen los siguientes requisitos basándose en las referencias [3], [4] y [5]:
+
+id: requirement:017
+name: Actualización de Ubicación de Vehículos
+description: El sistema deberá proporcionar la ubicación en tiempo real de todos los vehículos en operación, actualizando su posición al menos cada 3 segundos para garantizar monitoreo continuo.
+type: Non-Functional
+priority: Critical
+status: In Review
+rationale: Permite seguimiento preciso de flotas, soporte a aplicaciones de pasajeros y cumplimiento de objetivos de rendimiento en tiempo real.
+stakeholders: [Pasajeros, Operadores de Transporte, CTP, ARESEP, Desarrolladores de Aplicaciones]
+acceptanceCriteria:
+  - Las posiciones se actualizan en menos de 3 segundos desde el cambio real
+  - Soporta al menos 5,000 unidades móviles concurrentes
+  - Compatible con dispositivos móviles 3G o superior
+relatedComponents: [GPS, Servidor en Tiempo Real, Motor de Procesamiento de Posiciones]
+relatedInterfaces: [API GTFS-Realtime VehiclePositions, Aplicaciones Web/Móviles]
+relatedDataEntities: [VehiclePosition, Position, VehicleDescriptor]
+relatedActors: [Conductores, Administradores de Flota, Pasajeros]
+relación con requisito de Rendimiento: [1, 2, 3]
+
+id: requirement:018
+name: Actualización de Estado de Viajes
+description: El sistema deberá actualizar en tiempo real el estado de cada viaje, incluyendo retrasos, cambios de ruta y tiempos estimados de llegada, garantizando notificaciones a los usuarios en menos de 60 segundos.
+type: Non-Functional
+priority: Critical
+status: In Review
+rationale: Permite informar a los pasajeros de manera inmediata sobre eventos críticos y mantener la confiabilidad del sistema de transporte.
+stakeholders: [Pasajeros, Operadores de Transporte, CTP, ARESEP, Desarrolladores]
+acceptanceCriteria:
+  - Actualizaciones reflejadas en menos de 60 segundos
+  - Soporta visualización de al menos 5,000 vehículos concurrentes
+  - Compatible con dispositivos móviles 3G o superior
+relatedComponents: [Motor de Predicción de Horarios, Servidor de Datos en Tiempo Real]
+relatedInterfaces: [API GTFS-Realtime TripUpdates, Aplicaciones Web/Móviles]
+relatedDataEntities: [TripUpdate, StopTimeUpdate, TripDescriptor]
+relatedActors: [Pasajeros, Conductores, Reguladores]
+relación con requisito de Rendimiento: [1, 2, 3, 4]
+
+id: requirement:019
+name: Notificación de Eventos Críticos
+description: El sistema deberá enviar alertas en tiempo real sobre interrupciones de servicio, emergencias o eventos críticos, asegurando que los usuarios reciban la información en menos de 60 segundos.
+type: Non-Functional
+priority: Critical
+status: In Review
+rationale: Garantiza seguridad y confianza en el servicio, permitiendo a los pasajeros y operadores reaccionar ante situaciones críticas de manera oportuna.
+stakeholders: [Pasajeros, Operadores de Transporte, CNE, CTP, ARESEP, Municipalidades]
+acceptanceCriteria:
+  - Las alertas se reciben por el usuario final en menos de 60 segundos
+  - Soporta envío simultáneo a 5,000 unidades móviles o más
+  - Compatible con dispositivos móviles 3G o superior
+relatedComponents: [Sistema de Alertas, Servidor en Tiempo Real, Motor de Distribución de Notificaciones]
+relatedInterfaces: [API GTFS-Realtime Alerts, Aplicaciones Web/Móviles, Notificaciones Push]
+relatedDataEntities: [Alert, TimeRange, EntitySelector, SeverityLevel, Cause, Effect]
+relatedActors: [Usuarios, Operadores, Reguladores, CNE]
+relación con requisito de Rendimiento: [1, 3, 4]
 
 
 
- requirement:011
-
-name: Privacy & Data Protection (GDPR-like) 
-description: Cumplir con la normativa de protección de datos aplicable (anonimización, retención, derecho al olvido) [5]. 
-type: Non-Functional / Legal 
-priority: Critical 
-status: In Review 
-rationale: Protección legal y confianza del usuario. 
-acceptanceCriteria: PII cifrada at-rest, consentimiento registrado; política de retención implementada. 
-relatedComponents: User DB, Consent manager, KMS. 
-relatedInterfaces: Data export, Admin data request API. 
-relatedDataEntities: user_profile, consent_record.  
-relatedActors: Legal, Privacy officer. 
-
-
-
- requirement:012
-
-name: Over-the-Air Updates & Fleet Config Management 
-description: Habilitar actualizaciones remotas de configuraciones y firmware limitado (seguro) para OBU [5]. 
-type: Technical / Security 
-priority: Medium 
-status: Pending 
-rationale: Mantener seguridad y funciones actualizadas sin intervención física. 
-acceptanceCriteria: Firma digital de imágenes; rollback seguro. 
-relatedComponents: Device management service, OTA server. 
-relatedInterfaces: Device management API. 
-relatedDataEntities: device_firmware, device_config. 
-relatedActors: Field technicians, DevOps. 
-
-
-
- requirement:013
-
-name: Multi-Modal & Intermodal Support 
-description: Soportar transporte multimodal (buses, paratransit) y mostrar conexiones/transfers [5]. 
-type: Business / Functional 
-priority: Low/Medium 
-status: Pending 
-rationale: Extensibilidad futura y alineamiento con ARC-IT. 
-acceptanceCriteria: Rutas y transfers visibles en UI; integración de datos de otros modos. 
-relatedComponents: Routing engine, GTFS aggregator. 
-relatedInterfaces: External feeds (other operators). 
-relatedDataEntities: mode_type, transfer_node. 
-relatedActors: Planners, Users. 
-
-
-
- requirement:014
-
-name: Third-party API & Developer Portal 
-description: Publicar APIs documentadas para compartir datos (limítrofes) con desarrolladores y apps [5]. 
-type: Functional / Business 
-priority: Medium 
-status: Pending 
-rationale: Ecosistema y visibilidad para pasajeros. 
-acceptanceCriteria: Documentación OpenAPI, cuota por API, sandbox. 
-relatedComponents: API Gateway, Developer Portal. 
-relatedInterfaces: REST/GraphQL endpoints. 
-relatedDataEntities: api_key, app_registration. 
-relatedActors: Third-party developers, Mobility apps. 
 
 Referencias
 
@@ -300,3 +400,5 @@ stack.md
 [Online]. Available: https://ieeexplore.ieee.org/document/720574
 [4] Arc-It. [Online]. Available: https://www.arc-it.net/index.html
 [5] GTFS. [Online]. Available: https://gtfs.org/#
+[6] Web Content Accessibility Guidelines 2.1 [Online]. Available: https://www.w3.org/TR/2025/REC-WCAG21-20250506/
+[7] Ley de Protección de la Persona frente al tratamiento de sus datos personales [Online]. Available: https://pgrweb.go.cr/scij/Busqueda/Normativa/Normas/nrm_texto_completo.aspx?param1=NRTC&nValor1=1&nValor2=70975&nValor3=85989&strTipM=TC
