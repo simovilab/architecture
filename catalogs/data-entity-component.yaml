@@ -5,7 +5,7 @@ metadata:
   title: "Data Entity/Component Catalog"
   version: "1.1"
   date: "2025-09-18"
-  description: "Catalog of data entities and data components for the Costa Rica Public Transportation Information System aligned with GTFS and GTFS-Realtime."
+  description: "Reduced catalog of core data entities and components for the Costa Rica Public Transportation Information System, aligned with GTFS."
   author:
     - "Jostin Cubero Torres"
     - "Fabián Abarca Calderón"
@@ -18,275 +18,104 @@ metadata:
 # ======================
 stakeholders:
   - id: stakeholder:001
-    name: "Agencias de Transporte Público"
-    interests: ["Operación de rutas", "Puntualidad", "Tarifas", "Calidad del servicio"]
+    name: "Public Transport Agencies"
+    interests: ["Operations", "Schedules", "Tariffs"]
   - id: stakeholder:002
-    name: "Consejo de Transporte Público (CTP)"
-    interests: ["Regulación", "Fiscalización", "Planificación"]
-  - id: stakeholder:003
-    name: "Pasajeros / Usuarios"
-    interests: ["Información en tiempo real", "Planificación de viajes", "Tarifas"]
-  - id: stakeholder:004
-    name: "Municipalidades"
-    interests: ["Planificación urbana", "Movilidad", "Datos abiertos"]
+    name: "Passengers"
+    interests: ["Real-time info", "Trip planning", "Payments"]
 
 actors:
   - id: actor:passenger
-    name: "Pasajero"
-    description: "Consulta horarios, rutas y ETA en la app."
+    name: "Passenger"
+    description: "Consults schedules, routes and ETA."
   - id: actor:driver
-    name: "Conductor de autobús"
-    description: "Opera el vehículo y reporta telemetría."
-  - id: actor:agency-admin
-    name: "Administrador de agencia"
-    description: "Gestiona rutas, horarios y tarifas."
-  - id: actor:platform-admin
-    name: "Administrador de plataforma"
-    description: "Monitorea salud del sistema, logs y seguridad."
+    name: "Bus Driver"
+    description: "Operates the vehicle and reports telemetry."
 
 # =================
 # Data Entities
 # =================
 data_entities:
 
-  # ---- User & Preferences ----
   - id: data-entity:001
     name: "User"
-    description: "Registered user of the system."
+    description: "Registered system user."
     attributes:
       - { id: attribute:001, name: "user_id", type: "String", description: "Unique user identifier." }
-      - { id: attribute:002, name: "name", type: "String", description: "Full name." }
-      - { id: attribute:003, name: "email", type: "String", description: "Email address." }
-      - { id: attribute:004, name: "phone_number", type: "String", description: "Contact phone." }
+      - { id: attribute:002, name: "email", type: "String", description: "Email address." }
 
   - id: data-entity:002
-    name: "UserPreferences"
-    description: "Saved routes, stops and notification settings."
-    attributes:
-      - { id: attribute:005, name: "user_id", type: "String", description: "FK -> User.user_id." }
-      - { id: attribute:006, name: "favorite_routes", type: "String", description: "List of route_ids (CSV or array in DB)." }
-      - { id: attribute:007, name: "favorite_stops", type: "String", description: "List of stop_ids." }
-      - { id: attribute:008, name: "notify_eta", type: "Boolean", description: "Enable ETA notifications." }
-
-  # ---- Vehicle / Driver ----
-  - id: data-entity:003
     name: "Vehicle"
     description: "A physical bus in the fleet."
     attributes:
-      - { id: attribute:009,  name: "vehicle_id", type: "String",  description: "Unique vehicle identifier." }
-      - { id: attribute:010,  name: "license_plate", type: "String", description: "License plate." }
-      - { id: attribute:011,  name: "capacity", type: "Integer", description: "Seated/nominal capacity." }
-      - { id: attribute:012,  name: "agency_id", type: "String", description: "FK -> Agency.agency_id." }
+      - { id: attribute:003, name: "vehicle_id", type: "String", description: "Unique vehicle identifier." }
+      - { id: attribute:004, name: "license_plate", type: "String", description: "Bus license plate." }
+
+  - id: data-entity:003
+    name: "Driver"
+    description: "Driver assigned to a vehicle."
+    attributes:
+      - { id: attribute:005, name: "driver_id", type: "String", description: "Unique driver identifier." }
+      - { id: attribute:006, name: "name", type: "String", description: "Full name." }
 
   - id: data-entity:004
-    name: "Driver"
-    description: "Driver assigned to a vehicle or trip."
+    name: "Route"
+    description: "GTFS route operated by an agency."
     attributes:
-      - { id: attribute:013, name: "driver_id", type: "String", description: "Unique driver identifier." }
-      - { id: attribute:014, name: "name", type: "String", description: "Driver full name." }
-      - { id: attribute:015, name: "phone_number", type: "String", description: "Contact phone." }
+      - { id: attribute:007, name: "route_id", type: "String", description: "Unique route identifier." }
+      - { id: attribute:008, name: "route_name", type: "String", description: "Descriptive route name." }
 
-  # ---- GTFS Core ----
   - id: data-entity:005
-    name: "Agency"
-    description: "GTFS agency information."
+    name: "Trip"
+    description: "Scheduled service for a given route."
     attributes:
-      - { id: attribute:016, name: "agency_id", type: "String", description: "Unique agency identifier." }
-      - { id: attribute:017, name: "agency_name", type: "String", description: "Agency name." }
-      - { id: attribute:018, name: "agency_url", type: "String", description: "Official URL." }
-      - { id: attribute:019, name: "agency_timezone", type: "String", description: "Timezone (IANA)." }
+      - { id: attribute:009, name: "trip_id", type: "String", description: "Unique trip identifier." }
+      - { id: attribute:010, name: "route_id", type: "String", description: "FK -> Route.route_id." }
 
   - id: data-entity:006
-    name: "Route"
-    description: "GTFS route."
+    name: "Stop"
+    description: "Location where passengers board or alight."
     attributes:
-      - { id: attribute:020, name: "route_id", type: "String", description: "Unique route identifier." }
-      - { id: attribute:021, name: "agency_id", type: "String", description: "FK -> Agency.agency_id." }
-      - { id: attribute:022, name: "route_short_name", type: "String", description: "Short code (e.g., 200)." }
-      - { id: attribute:023, name: "route_long_name", type: "String", description: "Descriptive name." }
+      - { id: attribute:011, name: "stop_id", type: "String", description: "Unique stop identifier." }
+      - { id: attribute:012, name: "name", type: "String", description: "Stop name." }
 
   - id: data-entity:007
-    name: "Trip"
-    description: "Specific trip on a route at a given time."
+    name: "PaymentTransaction"
+    description: "Fare payment record."
     attributes:
-      - { id: attribute:024, name: "trip_id", type: "String", description: "Unique trip identifier." }
-      - { id: attribute:025, name: "route_id", type: "String", description: "FK -> Route.route_id." }
-      - { id: attribute:026, name: "service_id", type: "String", description: "FK -> Calendar.service_id." }
-      - { id: attribute:027, name: "vehicle_id", type: "String", description: "FK -> Vehicle.vehicle_id (optional)." }
+      - { id: attribute:013, name: "transaction_id", type: "String", description: "Unique transaction identifier." }
+      - { id: attribute:014, name: "amount", type: "Float", description: "Paid amount." }
 
   - id: data-entity:008
-    name: "Stop"
-    description: "Physical stop where vehicles pick up/drop off passengers."
-    attributes:
-      - { id: attribute:028, name: "stop_id", type: "String", description: "Unique stop identifier." }
-      - { id: attribute:029, name: "name", type: "String", description: "Stop name." }
-      - { id: attribute:030, name: "lat", type: "Float", description: "Latitude (WGS84)." }
-      - { id: attribute:031, name: "lon", type: "Float", description: "Longitude (WGS84)." }
-
-  - id: data-entity:009
-    name: "StopTime"
-    description: "Scheduled arrival/departure times of a trip at a stop."
-    attributes:
-      - { id: attribute:032, name: "trip_id", type: "String", description: "FK -> Trip.trip_id." }
-      - { id: attribute:033, name: "stop_id", type: "String", description: "FK -> Stop.stop_id." }
-      - { id: attribute:034, name: "arrival_time", type: "String", description: "HH:MM:SS (local)." }
-      - { id: attribute:035, name: "departure_time", type: "String", description: "HH:MM:SS (local)." }
-      - { id: attribute:036, name: "stop_sequence", type: "Integer", description: "Order in trip." }
-
-  - id: data-entity:010
-    name: "Calendar"
-    description: "Days of week a service runs."
-    attributes:
-      - { id: attribute:037, name: "service_id", type: "String", description: "Unique service identifier." }
-      - { id: attribute:038, name: "monday_to_sunday", type: "String", description: "Binary flags or set of booleans." }
-      - { id: attribute:039, name: "start_date", type: "String", description: "YYYYMMDD." }
-      - { id: attribute:040, name: "end_date", type: "String", description: "YYYYMMDD." }
-
-  - id: data-entity:011
-    name: "CalendarDates"
-    description: "Service exceptions for specific dates."
-    attributes:
-      - { id: attribute:041, name: "service_id", type: "String", description: "FK -> Calendar.service_id." }
-      - { id: attribute:042, name: "date", type: "String", description: "YYYYMMDD." }
-      - { id: attribute:043, name: "exception_type", type: "Integer", description: "1=added, 2=removed." }
-
-  - id: data-entity:012
-    name: "FareAttributes"
-    description: "Fare price and currency."
-    attributes:
-      - { id: attribute:044, name: "fare_id", type: "String", description: "Unique fare identifier." }
-      - { id: attribute:045, name: "price", type: "Float", description: "Fare price." }
-      - { id: attribute:046, name: "currency_type", type: "String", description: "ISO 4217 currency code." }
-
-  - id: data-entity:013
-    name: "FareRules"
-    description: "Rules for applying fares."
-    attributes:
-      - { id: attribute:047, name: "fare_id", type: "String", description: "FK -> FareAttributes.fare_id." }
-      - { id: attribute:048, name: "route_id", type: "String", description: "FK -> Route.route_id." }
-
-  # ---- Realtime (GTFS-RT) ----
-  - id: data-entity:014
-    name: "TripUpdate"
-    description: "Realtime delays/cancellations for a trip."
-    attributes:
-      - { id: attribute:049, name: "trip_id", type: "String", description: "FK -> Trip.trip_id." }
-      - { id: attribute:050, name: "timestamp", type: "Datetime", description: "Event time (UTC)." }
-      - { id: attribute:051, name: "delay_seconds", type: "Integer", description: "Positive/negative delay." }
-      - { id: attribute:052, name: "status", type: "String", description: "on_time, delayed, cancelled." }
-
-  - id: data-entity:015
-    name: "VehiclePosition"
-    description: "Realtime GPS position of a vehicle."
-    attributes:
-      - { id: attribute:053, name: "vehicle_id", type: "String", description: "FK -> Vehicle.vehicle_id." }
-      - { id: attribute:054, name: "timestamp", type: "Datetime", description: "Position time (UTC)." }
-      - { id: attribute:055, name: "lat", type: "Float", description: "Latitude." }
-      - { id: attribute:056, name: "lon", type: "Float", description: "Longitude." }
-      - { id: attribute:057, name: "bearing", type: "Float", description: "Degrees (0-360)." }
-      - { id: attribute:058, name: "speed_kph", type: "Float", description: "Speed in kph." }
-
-  - id: data-entity:016
-    name: "ServiceAlert"
-    description: "Service-affecting events like detours or incidents."
-    attributes:
-      - { id: attribute:059, name: "alert_id", type: "String", description: "Unique alert identifier." }
-      - { id: attribute:060, name: "severity", type: "String", description: "info, warning, critical." }
-      - { id: attribute:061, name: "description", type: "String", description: "Alert text." }
-      - { id: attribute:062, name: "affected_routes", type: "String", description: "List of route_ids." }
-
-  # ---- Payments & Logs ----
-  - id: data-entity:017
-    name: "PaymentTransaction"
-    description: "Record of a fare payment."
-    attributes:
-      - { id: attribute:063, name: "transaction_id", type: "String", description: "Unique transaction identifier." }
-      - { id: attribute:064, name: "user_id", type: "String", description: "FK -> User.user_id." }
-      - { id: attribute:065, name: "amount", type: "Float", description: "Paid amount." }
-      - { id: attribute:066, name: "currency", type: "String", description: "ISO 4217 code." }
-      - { id: attribute:067, name: "timestamp", type: "Datetime", description: "Payment time (UTC)." }
-
-  - id: data-entity:018
     name: "SystemLog"
-    description: "Technical events and errors for maintenance."
+    description: "System events for monitoring and debugging."
     attributes:
-      - { id: attribute:068, name: "log_id", type: "String", description: "Unique log identifier." }
-      - { id: attribute:069, name: "level", type: "String", description: "INFO/WARN/ERROR." }
-      - { id: attribute:070, name: "message", type: "String", description: "Log message." }
-      - { id: attribute:071, name: "timestamp", type: "Datetime", description: "Event time (UTC)." }
+      - { id: attribute:015, name: "log_id", type: "String", description: "Unique log identifier." }
+      - { id: attribute:016, name: "level", type: "String", description: "Log severity (INFO/ERROR)." }
 
 # =================
 # Data Components
 # =================
 data_components:
 
-  # Gestión de usuarios y flota (lo tuyo + extendido)
   - id: data-component:001
-    name: "User Management"
-    description: "Registration, authentication, profiles and preferences."
-    data_entities: [data-entity:001, data-entity:002]
+    name: "User & Fleet Management"
+    description: "Manages users, vehicles, drivers and assignments."
+    data_entities: [data-entity:001, data-entity:002, data-entity:003]
 
   - id: data-component:002
-    name: "Fleet Management"
-    description: "Vehicle and driver registry; assignment to trips."
-    data_entities: [data-entity:003, data-entity:004]
+    name: "Relational Database"
+    description: "Stores GTFS data and payment transactions."
+    data_entities: [data-entity:004, data-entity:005, data-entity:006, data-entity:007]
 
-  # Almacenamiento
   - id: data-component:003
-    name: "Relational DB (PostgreSQL)"
-    description: "Authoritative store for GTFS tables and transactional data."
-    data_entities: [data-entity:005, data-entity:006, data-entity:007, data-entity:008, data-entity:009, data-entity:010, data-entity:011, data-entity:012, data-entity:013, data-entity:017]
+    name: "Realtime Engine"
+    description: "Processes vehicle positions, trip updates and alerts."
+    data_entities: [data-entity:002, data-entity:005]
 
   - id: data-component:004
-    name: "Time-Series DB (InfluxDB or similar)"
-    description: "Efficient storage for high-frequency GPS and realtime events."
-    data_entities: [data-entity:015, data-entity:014]
-
-  - id: data-component:005
-    name: "In-memory Cache (Redis)"
-    description: "Hot data for ETA predictions and frequently accessed queries."
-    data_entities: [data-entity:015, data-entity:014, data-entity:016]
-
-  # Procesamiento y lógica
-  - id: data-component:006
-    name: "Realtime Processing Engine"
-    description: "Ingests GPS, computes ETA and publishes TripUpdates/Alerts."
-    data_entities: [data-entity:014, data-entity:015, data-entity:016]
-
-  - id: data-component:007
-    name: "Route Planner"
-    description: "Point-to-point routing for passengers using GTFS data."
-    data_entities: [data-entity:006, data-entity:007, data-entity:008, data-entity:009, data-entity:010, data-entity:011]
-
-  - id: data-component:008
-    name: "Fare Management"
-    description: "Fare calculation and validation."
-    data_entities: [data-entity:012, data-entity:013, data-entity:017]
-
-  - id: data-component:009
-    name: "Reporting & Analytics"
-    description: "KPIs: punctuality, ridership, route usage."
-    data_entities: [data-entity:007, data-entity:009, data-entity:014, data-entity:015, data-entity:017, data-entity:018]
-
-  # Interfaces / Integraciones
-  - id: data-component:010
-    name: "Public Passenger API"
-    description: "Endpoints for schedules, routes and ETA."
-    data_entities: [data-entity:006, data-entity:007, data-entity:008, data-entity:009, data-entity:014, data-entity:015]
-
-  - id: data-component:011
-    name: "Internal Admin API"
-    description: "Agency backoffice for managing routes, stops and vehicles."
-    data_entities: [data-entity:005, data-entity:006, data-entity:007, data-entity:008, data-entity:003, data-entity:004, data-entity:012, data-entity:013]
-
-  - id: data-component:012
-    name: "Payment Gateway Integration"
-    description: "External payment processors for fare collection."
-    data_entities: [data-entity:017]
-
-  - id: data-component:013
-    name: "GTFS Feed Ingestion"
-    description: "Fetches and updates official GTFS datasets."
-    data_entities: [data-entity:005, data-entity:006, data-entity:007, data-entity:008, data-entity:009, data-entity:010, data-entity:011, data-entity:012, data-entity:013]
+    name: "Public & Admin APIs"
+    description: "Expose schedules, routes and admin endpoints."
+    data_entities: [data-entity:001, data-entity:004, data-entity:005, data-entity:006, data-entity:007, data-entity:008]
 
 
