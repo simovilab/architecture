@@ -13,25 +13,6 @@ metadata:
   contact: "simovi@ucr.ac.cr"
   license: "CC BY 4.0"
 
-# ======================
-# Stakeholders & Actors
-# ======================
-stakeholders:
-  - id: stakeholder:001
-    name: "Public Transport Agencies"
-    interests: ["Operations", "Schedules", "Tariffs"]
-  - id: stakeholder:002
-    name: "Passengers"
-    interests: ["Real-time info", "Trip planning", "Payments"]
-
-actors:
-  - id: actor:passenger
-    name: "Passenger"
-    description: "Consults schedules, routes and ETA."
-  - id: actor:driver
-    name: "Bus Driver"
-    description: "Operates the vehicle and reports telemetry."
-
 # =================
 # Data Entities
 # =================
