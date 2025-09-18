@@ -228,9 +228,3 @@ Streaming de datos de sensores o IoT (si no se necesita comunicación en ambos s
 **status**: Activo
 
 **documentation**: https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events
-
-*cursiva*
-
-## Listas
-* la
-* gallina
