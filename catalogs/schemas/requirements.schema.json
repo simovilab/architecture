@@ -23,6 +23,7 @@
           "status",
           "rationale",
           "stakeholders",
+          "implementationOwner",
           "acceptanceCriteria",
           "relatedComponents",
           "relatedInterfaces",
@@ -116,6 +117,14 @@
             },
             "minItems": 1,
             "description": "List of stakeholder groups affected by or interested in this requirement"
+          },
+          "implementationOwner": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "description": "List of actors responsible for the implementation of this requirement"
           },
           "acceptanceCriteria": {
             "type": "array",
