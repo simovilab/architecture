@@ -8,6 +8,10 @@
     "file:///Users/fabian/NextCloud/architecture/catalogs/schemas/organization-actor.schema.json": "file:///Users/fabian/NextCloud/architecture/catalogs/organization-actor.yaml",
     "file:///Users/fabian/NextCloud/architecture/catalogs/schemas/requirements.schema.json": "file:///Users/fabian/NextCloud/architecture/catalogs/requirements.yaml",
     "file:///Users/fabian/NextCloud/architecture/catalogs/schemas/technology-portfolio.schema.json": "file:///Users/fabian/NextCloud/architecture/catalogs/technology-portfolio.yaml",
-    "file:///Users/fabian/NextCloud/architecture/catalogs/schemas/technology-standards.schema.json": "file:///Users/fabian/NextCloud/architecture/catalogs/technology-standards.yaml"
+    "file:///Users/fabian/NextCloud/architecture/catalogs/schemas/technology-standards.schema.json": "file:///Users/fabian/NextCloud/architecture/catalogs/technology-standards.yaml",
+    "https://www.schemastore.org/aiconfig-1.0.json": [
+      "file:///c%3A/Users/josea/architecture/catalogs/stakeholder.yaml",
+      "file:///c%3A/Users/josea/architecture/catalogs/organization-actor.yaml"
+    ]
   }
 }
