@@ -1,9 +1,9 @@
 # Metadata about the catalog
 metadata:
-  title: "Stakeholder Catalog"
-  version: "1.0"
-  date: "2025-09-18"
-  description: "A catalog of architectural stakeholders for a Public Transportation Information System."
+  title: "Catálogo de Partes Interesadas (Stakeholders)"
+  version: "1.1"
+  date: "2025-09-25"
+  description: "Un catálogo de las categorías de partes interesadas para el Sistema de Información del Transporte Público."
   author:
     - "Jose Murillo Vargas"
     - "Fabián Abarca Calderón"
@@ -13,57 +13,58 @@ metadata:
 
 # Stakeholder catalog
 stakeholders:
-  - id: stakeholder:001
-    name: "Passengers"
-    description: "Individuals who use the public transportation system for their daily commute or travel needs."
+  - id: "stakeholder:001"
+    name: "Pasajeros"
+    description: "Individuos que utilizan el sistema de transporte público para sus traslados diarios o de viaje."
     role: "End Users"
     interests:
-      - "Reliable and timely information about bus arrivals and departures."
-      - "User-friendly mobile application for route planning."
-      - "Real-time updates on service disruptions or delays."
+      - "Información fiable y puntual sobre llegadas y salidas de autobuses."
+      - "Aplicación móvil fácil de usar para la planificación de rutas."
+      - "Actualizaciones en tiempo real sobre interrupciones o retrasos del servicio."
     influence: "High"
     priority: "High"
+    classifications: # Atributo adicional de ejemplo
+      - "Externo"
+      - "Usuario final"
 
-  - id: stakeholder:002
-    name: "Bus Operators"
-    description: "Companies or entities responsible for operating the buses within the public transportation system."
+  - id: "stakeholder:002"
+    name: "Operadores de Autobús"
+    description: "Empresas o entidades responsables de operar los autobuses dentro del sistema de transporte público."
     role: "Service Providers"
     interests:
-      - "Efficient scheduling and dispatching of buses."
-      - "Access to real-time data for better fleet management."
-      - "Integration with payment systems for fare collection."
+      - "Programación y despacho eficientes de los autobuses."
+      - "Acceso a datos en tiempo real para una mejor gestión de la flota."
+      - "Integración con sistemas de pago para el cobro de tarifas."
     influence: "High"
     priority: "High"
+    classifications:
+      - "Externo"
+      - "Proveedor"
 
-  - id: stakeholder:003
-    name: "City Transportation Authorities"
-    description: "Government agencies overseeing public transportation policies, regulations, and funding."
+  - id: "stakeholder:003"
+    name: "Autoridades de Transporte de la Ciudad"
+    description: "Agencias gubernamentales que supervisan las políticas, regulaciones y financiamiento del transporte público."
     role: "Regulators and Planners"
     interests:
-      - "Compliance with transportation regulations and standards."
-      - "Data analytics for improving transportation services."
-      - "Public satisfaction and feedback mechanisms."
+      - "Cumplimiento de las regulaciones y estándares de transporte."
+      - "Análisis de datos para la mejora de los servicios de transporte."
+      - "Mecanismos de retroalimentación y satisfacción del público."
     influence: "High"
     priority: "Medium"
+    classifications:
+      - "Interno"
+      - "Gobernanza"
 
-  - id: stakeholder:004
-    name: "Maintenance Teams"
-    description: "Personnel responsible for the upkeep and repair of buses and related infrastructure."
+  - id: "stakeholder:004"
+    name: "Equipos de Mantenimiento"
+    description: "Personal responsable del mantenimiento y reparación de los autobuses y la infraestructura relacionada."
     role: "Support Staff"
     interests:
-      - "Access to maintenance schedules and records."
-      - "Real-time alerts on vehicle issues or breakdowns."
-      - "Efficient communication with bus operators."
+      - "Acceso a horarios y registros de mantenimiento."
+      - "Alertas en tiempo real sobre problemas o averías de los vehículos."
+      - "Comunicación eficiente con los operadores de autobuses."
     influence: "Medium"
     priority: "Medium"
-
-  - id: stakeholder:005
-    name: "IT Support Staff"
-    description: "Teams responsible for maintaining the technological infrastructure of the Public Transportation Information System."
-    role: "Technical Support"
-    interests:
-      - "System uptime and reliability."
-      - "Security of user data and system integrity."
-      - "Scalability to handle increasing user demand."
-    influence: "Medium"
-    priority: "Medium"
+    classifications:
+      - "Interno"
+      - "Soporte"

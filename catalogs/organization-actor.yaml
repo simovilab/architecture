@@ -1,9 +1,9 @@
 # Metadata about the catalog
 metadata:
-  title: "Organizations and Actors Catalog"
-  version: "1.0"
-  date: "2025-09-18"
-  description: "A catalog of architectural organizations and actors for a Public Transportation Information System."
+  title: "Catálogo de Organizaciones y Actores"
+  version: "1.3"
+  date: "2025-09-25"
+  description: "Un catálogo de las organizaciones y actores para el Sistema de Información del Transporte Público, enriquecido con atributos del metamodelo de TOGAF."
   author:
     - "Jose Murillo Vargas"
     - "Fabián Abarca Calderón"
@@ -13,27 +13,153 @@ metadata:
 
 # Organization catalog
 organizations:
-  - id: organization:001
+  - id: "organization:001"
     name: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
-    description: "A research lab focused on intelligent mobility systems."
-    stakeholder: "stakeholder:003"
+    description: "Un laboratorio de investigación centrado en sistemas de movilidad inteligente."
+    stakeholder: "stakeholder:007"
+    type: "Laboratorio de Investigación"
+    headcount: 10 # Estimado
     contact: "simovi@ucr.ac.cr"
     website: "https://simovi.ucr.ac.cr"
-    location: "University of Costa Rica, San José, Costa Rica"
+    location: "Universidad de Costa Rica, San José, Costa Rica"
     parentOrganization: null
     roles:
-      - "Research"
-      - "Development"
-      - "Consulting"
+      - "Investigación"
+      - "Desarrollo"
+
+  - id: "organization:002"
+    name: "Ministerio de Obras Públicas y Transportes (MOPT)"
+    description: "El ministerio gubernamental que actúa como autoridad suprema y rectora del sector transporte, estableciendo la política nacional."
+    stakeholder: "stakeholder:003"
+    type: "Agencia Gubernamental"
+    headcount: null # Se gestionaban 513 plazas vacantes a finales de 2023.
+    contact: "dvagecorrespondencia@mopt.go.cr"
+    website: "https://www.mopt.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Planificación"
+      - "Regulación"
+
+  - id: "organization:003"
+    name: "Consejo de Transporte Público (CTP)"
+    description: "El organismo especializado dependiente del MOPT, responsable de la gestión diaria y la regulación operativa del transporte público."
+    stakeholder: "stakeholder:003"
+    type: "Agencia Gubernamental"
+    headcount: null # No se encontraron datos.
+    contact: "atencion.usuario@ctp.go.cr"
+    website: "https://www.ctp.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: "organization:002"
+    roles:
+      - "Operación"
+      - "Regulación"
+
+  - id: "organization:004"
+    name: "Autoridad Reguladora de los Servicios Públicos (ARESEP)"
+    description: "Una autoridad independiente que regula los servicios públicos estableciendo tarifas y supervisando la calidad del servicio."
+    stakeholder: "stakeholder:003"
+    type: "Agencia Gubernamental"
+    headcount: 341 # Aproximado para 2018, incluyendo plazas fijas y vacantes.
+    contact: "cmora@aresep.go.cr"
+    website: "https://aresep.go.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Regulación"
+      - "Supervisión"
+
+  - id: "organization:005"
+    name: "Banco Central de Costa Rica (BCCR)"
+    description: "El banco central responsable de operar el sistema nacional de pago electrónico del país (SINPE-TP)."
+    stakeholder: "stakeholder:006"
+    type: "Agencia Gubernamental"
+    headcount: null # No se encontró un número total; un solo equipo interno tiene más de 50 funcionarios.
+    contact: "atencionalciudadano@bccr.fi.cr"
+    website: "https://www.bccr.fi.cr/"
+    location: "San José, Costa Rica"
+    parentOrganization: null
+    roles:
+      - "Proveedor de Tecnología"
+      - "Operación"
 
 # Actor catalog
 actors:
-  - id: actor:001
+  - id: "actor:001"
     name: "Fabián Abarca Calderón"
-    description: "Lead Architect at SIMOVI."
+    description: "Arquitecto Principal en SIMOVI."
     type: "Person"
+    actorGoal: "Definir una arquitectura robusta y escalable para el sistema de información."
+    actorTasks:
+      - "Diseñar los catálogos de arquitectura."
+      - "Validar la consistencia del metamodelo."
     contact: "fabian.abarca@ucr.ac.cr"
     organization: "organization:001"
     roles:
       - "Lead Architect"
+
+  - id: "actor:002"
+    name: "Jose Murillo Vargas"
+    description: "Estudiante y contribuyente del proyecto, responsable de los catálogos de Stakeholder y Organization/Actor."
+    type: "Person"
+    actorGoal: "Poblar los catálogos de arquitectura con información precisa y relevante."
+    actorTasks:
+      - "Investigar las entidades clave del transporte público."
+      - "Formatear los datos según el esquema YAML."
+    contact: "jose.murillovargas@ucr.ac.cr"
+    organization: "organization:001"
+    roles:
+      - "Developer"
+      - "Analyst"
+
+  - id: "actor:003"
+    name: "Efraím Zeledón Leiva"
+    description: "Ministro actual de Obras Públicas y Transportes (MOPT)."
+    type: "Person"
+    actorGoal: "Implementar la política nacional de transporte y modernización."
+    actorTasks:
+      - "Supervisar proyectos de infraestructura."
+      - "Coordinar con otros entes del gobierno."
+    contact: "dvagecorrespondencia@mopt.go.cr"
+    organization: "organization:002"
+    roles:
+      - "Project Manager"
+
+  - id: "actor:004"
+    name: "Rafael Alberto Herrera García"
+    description: "Director Ejecutivo actual del Consejo de Transporte Público (CTP)."
+    type: "Person"
+    actorGoal: "Garantizar la operación eficiente y regulada del transporte público."
+    actorTasks:
+      - "Gestionar las concesiones de rutas."
+      - "Implementar la modernización de la flota y los sistemas."
+    contact: "atencion.usuario@ctp.go.cr"
+    organization: "organization:003"
+    roles:
+      - "Operations Manager"
+
+  - id: "actor:005"
+    name: "Eric Bogantes Cabezas"
+    description: "Regulador General actual de la Autoridad Reguladora de los Servicios Públicos (ARESEP)."
+    type: "Person"
+    actorGoal: "Asegurar tarifas justas y un servicio de calidad para los usuarios."
+    actorTasks:
+      - "Analizar estudios de costos para la fijación de tarifas."
+      - "Fiscalizar el cumplimiento de la calidad del servicio."
+    contact: "cmora@aresep.go.cr"
+    organization: "organization:004"
+    roles:
+      - "Analyst"
+
+  - id: "actor:006"
+    name: "Róger Madrigal López"
+    description: "Presidente Ejecutivo actual del Banco Central de Costa Rica (BCCR)."
+    type: "Person"
+    actorGoal: "Garantizar la estabilidad y eficiencia del sistema nacional de pagos."
+    actorTasks:
+      - "Supervisar la operación de SINPE y SINPE-TP."
+      - "Definir las regulaciones para los sistemas de pago."
+    contact: "atencionalciudadano@bccr.fi.cr"
+    organization: "organization:005"
+    roles:
       - "Project Manager"
