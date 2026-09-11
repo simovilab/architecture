@@ -1,9 +1,11 @@
+# =========================
 # Metadata about the catalog
+# =========================
 metadata:
   title: "Data Entity/Component Catalog"
-  version: "1.0"
+  version: "1.1"
   date: "2025-09-18"
-  description: "A catalog of data entities and components for a Public Transportation Information System."
+  description: "Reduced catalog of core data entities and components for the Costa Rica Public Transportation Information System, aligned with GTFS."
   author:
     - "Jostin Cubero Torres"
     - "Fabián Abarca Calderón"
@@ -11,58 +13,90 @@ metadata:
   contact: "simovi@ucr.ac.cr"
   license: "CC BY 4.0"
 
-# Data Entity catalog
+# =================
+# Data Entities
+# =================
 data_entities:
+
   - id: data-entity:001
     name: "User"
-    description: "Represents a user of the Public Transportation Information System."
+    description: "Registered system user."
     attributes:
-      - id: attribute:001
-        name: "User ID"
-        type: "String"
-        description: "A unique identifier for the user."
-      - id: attribute:002
-        name: "Name"
-        type: "String"
-        description: "The full name of the user."
-      - id: attribute:003
-        name: "Email"
-        type: "String"
-        description: "The email address of the user."
-      - id: attribute:004
-        name: "Phone Number"
-        type: "String"
-        description: "The contact phone number of the user."
-  - id: data-entity:002
-    name: "Bus"
-    description: "Represents a bus in the Public Transportation Information System."
-    attributes:
-      - id: attribute:005
-        name: "Bus ID"
-        type: "String"
-        description: "A unique identifier for the bus."
-      - id: attribute:006
-        name: "License Plate"
-        type: "String"
-        description: "The license plate number of the bus."
-      - id: attribute:007
-        name: "Capacity"
-        type: "Integer"
-        description: "The maximum number of passengers the bus can carry."
-      - id: attribute:008
-        name: "Route ID"
-        type: "String"
-        description: "The identifier of the route the bus is assigned to."
+      - { id: attribute:001, name: "user_id", type: "String", description: "Unique user identifier." }
+      - { id: attribute:002, name: "email", type: "String", description: "Email address." }
 
-# Data Component catalog
+  - id: data-entity:002
+    name: "Vehicle"
+    description: "A physical bus in the fleet."
+    attributes:
+      - { id: attribute:003, name: "vehicle_id", type: "String", description: "Unique vehicle identifier." }
+      - { id: attribute:004, name: "license_plate", type: "String", description: "Bus license plate." }
+
+  - id: data-entity:003
+    name: "Driver"
+    description: "Driver assigned to a vehicle."
+    attributes:
+      - { id: attribute:005, name: "driver_id", type: "String", description: "Unique driver identifier." }
+      - { id: attribute:006, name: "name", type: "String", description: "Full name." }
+
+  - id: data-entity:004
+    name: "Route"
+    description: "GTFS route operated by an agency."
+    attributes:
+      - { id: attribute:007, name: "route_id", type: "String", description: "Unique route identifier." }
+      - { id: attribute:008, name: "route_name", type: "String", description: "Descriptive route name." }
+
+  - id: data-entity:005
+    name: "Trip"
+    description: "Scheduled service for a given route."
+    attributes:
+      - { id: attribute:009, name: "trip_id", type: "String", description: "Unique trip identifier." }
+      - { id: attribute:010, name: "route_id", type: "String", description: "FK -> Route.route_id." }
+
+  - id: data-entity:006
+    name: "Stop"
+    description: "Location where passengers board or alight."
+    attributes:
+      - { id: attribute:011, name: "stop_id", type: "String", description: "Unique stop identifier." }
+      - { id: attribute:012, name: "name", type: "String", description: "Stop name." }
+
+  - id: data-entity:007
+    name: "PaymentTransaction"
+    description: "Fare payment record."
+    attributes:
+      - { id: attribute:013, name: "transaction_id", type: "String", description: "Unique transaction identifier." }
+      - { id: attribute:014, name: "amount", type: "Float", description: "Paid amount." }
+
+  - id: data-entity:008
+    name: "SystemLog"
+    description: "System events for monitoring and debugging."
+    attributes:
+      - { id: attribute:015, name: "log_id", type: "String", description: "Unique log identifier." }
+      - { id: attribute:016, name: "level", type: "String", description: "Log severity (INFO/ERROR)." }
+
+# =================
+# Data Components
+# =================
 data_components:
+
   - id: data-component:001
-    name: "User Management"
-    description: "Handles user registration, authentication, and profile management."
-    data_entities:
-      - data-entity:001
+    name: "User & Fleet Management"
+    description: "Manages users, vehicles, drivers and assignments."
+    data_entities: [data-entity:001, data-entity:002, data-entity:003]
+
   - id: data-component:002
-    name: "Bus Management"
-    description: "Manages bus information, assignments, and status updates."
-    data_entities:
-      - data-entity:002
+    name: "Relational Database"
+    description: "Stores GTFS data and payment transactions."
+    data_entities: [data-entity:004, data-entity:005, data-entity:006, data-entity:007]
+
+  - id: data-component:003
+    name: "Realtime Engine"
+    description: "Processes vehicle positions, trip updates and alerts."
+    data_entities: [data-entity:002, data-entity:005]
+
+  - id: data-component:004
+    name: "Public & Admin APIs"
+    description: "Expose schedules, routes and admin endpoints."
+    data_entities: [data-entity:001, data-entity:004, data-entity:005, data-entity:006, data-entity:007, data-entity:008]
+
+
