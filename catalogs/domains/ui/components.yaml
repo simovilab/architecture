@@ -1,0 +1,18 @@
+# schema-url: ../metadata.schema.json
+
+metadata:
+  title: "UI Components Catalog"
+  version: "0.1"
+  date: "2026-09-11"
+  description: "A catalog of architectural requirements for a Public Transportation Information System."
+  author:
+    - "Fabián Abarca Calderón"
+    - "José Flores Quirós"
+    - "Felipe Quesada Parada"
+    - "Oscar Porras Silesky"
+    - "David Naranjo Loría"
+  organization: "Laboratorio de Sistemas Inteligentes de Movilidad (SIMOVI)"
+  contact: "simovi@ucr.ac.cr"
+  license: "CC BY 4.0"
+
+layouts:

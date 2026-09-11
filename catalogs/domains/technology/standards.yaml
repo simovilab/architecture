@@ -13,7 +13,7 @@ metadata:
 
 # Technology Standards catalog
 technologyStandards:
-  - id: tech-standard:001
+  - id: standard:openapi
     name: "OpenAPI Specification"
     description: "A standard for defining RESTful APIs."
     version: "3.0.3"
@@ -25,7 +25,7 @@ technologyStandards:
       - "Postman"
     status: "Active"
     documentation: "https://swagger.io/specification/"
-  - id: tech-standard:002
+  - id: standard:oauth2
     name: "OAuth 2.0"
     description: "An authorization framework that enables applications to obtain limited access to user accounts."
     version: "RFC 6749"

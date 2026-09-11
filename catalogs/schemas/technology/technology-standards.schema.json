@@ -28,7 +28,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^tech-standard:\\d{3}$",
+            "pattern": "^standard:\\d{3}$",
             "description": "Unique identifier for the technology standard following the pattern tech-standard:XXX"
           },
           "name": {

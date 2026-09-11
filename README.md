@@ -1,0 +1,35 @@
+# Domains and catalogs
+
+- application
+  - portfolio.yaml
+  - requirements.yaml
+- architecture
+  - components.yaml
+  - patterns.yaml
+- communication
+  - brands.yaml
+  - graphics.yaml
+  - signage.yaml
+  - touchpoints.yaml
+- data
+  - components.yaml
+  - entities.yaml
+- governance
+  - actors.yaml
+  - organizations.yaml
+  - principles.yaml
+  - regulations.yaml
+- service
+  - contexts.yaml
+  - information-needs.yaml
+  - spaces.yaml
+  - stakeholders.yaml
+  - times.yaml
+- technology
+  - interfaces.yaml
+  - portfolio.yaml
+  - standards.yaml
+- ui
+  - composites.yaml
+  - components.yaml
+  - layouts.yaml
