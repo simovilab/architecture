@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Service Information Needs Portfolio Catalog Schema",
+  "description": "JSON Schema for validating application portfolio catalog YAML files in the Public Transportation Information System architecture",
+  "type": "object",
+  "required": ["metadata", "applications"],
+  "properties": {
+    "metadata": {
+      "$ref": "./metadata.schema.json"
+    },
+    "information_needs": {
+      "type": "array",
+      "description": "List of information needs in the public transportation information system",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^information-need:\\d{3}$",
+            "description": "Unique identifier for the information need following the pattern information-need   :XXX"
+          }
+        },
+        "additionalProperties": true
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}

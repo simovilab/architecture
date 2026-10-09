@@ -1,5 +1,8 @@
 # Domains and catalogs
 
+- Domains: 8
+- Catalogs: 25
+
 - application
   - portfolio.yaml
   - requirements.yaml

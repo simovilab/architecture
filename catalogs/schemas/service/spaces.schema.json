@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Service Spaces Portfolio Catalog Schema",
+  "description": "JSON Schema for validating application portfolio catalog YAML files in the Public Transportation Information System architecture",
+  "type": "object",
+  "required": ["metadata", "applications"],
+  "properties": {
+    "metadata": {
+      "$ref": "./metadata.schema.json"
+    },
+    "spaces": {
+      "type": "array",
+      "description": "List of spaces in the public transportation information system",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^space:\\d{3}$",
+            "description": "Unique identifier for the space following the pattern space   :XXX"
+          }
+        },
+        "additionalProperties": true
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}

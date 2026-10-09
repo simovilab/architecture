@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Service Contexts Portfolio Catalog Schema",
+  "description": "JSON Schema for validating application portfolio catalog YAML files in the Public Transportation Information System architecture",
+  "type": "object",
+  "required": ["metadata", "applications"],
+  "properties": {
+    "metadata": {
+      "$ref": "./metadata.schema.json"
+    },
+    "contexts": {
+      "type": "array",
+      "description": "List of contexts in the public transportation information system",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^context:\\d{3}$",
+            "description": "Unique identifier for the context following the pattern context   :XXX"
+          }
+        },
+        "additionalProperties": true
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}
